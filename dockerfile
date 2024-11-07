@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:18 AS builder
+FROM node:22 AS builder
 
 # Set the working directory in the container
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Create the production image
-FROM node:18-slim AS runner
+FROM node:22-slim AS runner
 
 # Set environment variable for production
 ENV NODE_ENV production
