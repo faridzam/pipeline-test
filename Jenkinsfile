@@ -11,7 +11,9 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        git 'https://github.com/faridzam/pipeline-test.git'
+        withCredentials([string(credentialsId: 'faridzam-github-credential', variable: 'GITHUB_TOKEN')]) {
+            git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-credential'
+        }
       }
     }
 
