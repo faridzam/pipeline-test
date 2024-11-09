@@ -5,7 +5,7 @@ pipeline {
     dockerImage = ""
   }
 
-  agent any
+  agent {dockerfile true}
 
   tools {dockerTool "jenkins-docker"}
 
