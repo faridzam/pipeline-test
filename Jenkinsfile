@@ -23,8 +23,8 @@ pipeline {
           def dockerHome = tool 'jenkins-docker'
           env.PATH = "${dockerHome}/bin:${env.PATH}"
         }
-        sh "docker --version"
-        sh "docker run -d -v /var/run/docker.sock:/var/run/docker.sock -p 8080:8080 jenkins/jenkins"
+        sh "docker run -p 8080:8080 --user root \
+     -v /var/run/docker.sock:/var/run/docker.sock jenkinsci/blueocean"
       }
     }
 
