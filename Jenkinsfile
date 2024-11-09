@@ -18,7 +18,7 @@ pipeline {
     }
 
     stage('Build image') {
-      tool { docker 'jenkins-docker'}
+      tools { dockerTools, 'jenkins-docker' }
       steps{
         script {
           dockerImage = docker.build dockerimagename
