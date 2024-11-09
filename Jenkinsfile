@@ -23,6 +23,7 @@ pipeline {
           def dockerHome = tool 'jenkins-docker'
           env.PATH = "${dockerHome}/bin:${env.PATH}"
         }
+        sh "sudo systemctl start docker"
       }
     }
 
@@ -58,8 +59,7 @@ pipeline {
     stage('Remove Unused docker image') {
       steps{
         sh "docker rmi $imagename:$BUILD_NUMBER"
-         sh "docker rmi $imagename:latest"
-
+        sh "docker rmi $imagename:latest"
       }
     }
 
