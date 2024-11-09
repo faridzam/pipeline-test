@@ -31,7 +31,7 @@ pipeline {
            }
       steps{
         script {
-          docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+          docker.withRegistry( 'https://hub.docker.com', registryCredential ) {
             dockerImage.push("latest")
           }
         }
@@ -46,13 +46,13 @@ pipeline {
       }
     }
 
-    stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi $imagename:$BUILD_NUMBER"
-         sh "docker rmi $imagename:latest"
+    // stage('Remove Unused docker image') {
+    //   steps{
+    //     sh "docker rmi $imagename:$BUILD_NUMBER"
+    //      sh "docker rmi $imagename:latest"
 
-      }
-    }
+    //   }
+    // }
 
   }
 
