@@ -17,9 +17,13 @@ pipeline {
       }
     }
 
-    stage('Initialize Docker'){
-      def dockerHome = tool 'jenkins-docker'
-      env.PATH = "${dockerHome}/bin:${env.PATH}"
+    stage('Initialize Docker') {
+      steps {
+        script {
+          def dockerHome = tool 'jenkins-docker'
+          env.PATH = "${dockerHome}/bin:${env.PATH}"
+        }
+      }
     }
 
     stage('Build image') {
