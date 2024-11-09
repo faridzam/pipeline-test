@@ -7,8 +7,6 @@ pipeline {
   
   agent any
 
-  tools {dockerTools, 'jenkins-docker'}
-
   stages {
 
     stage('Checkout Source') {
@@ -20,6 +18,7 @@ pipeline {
     }
 
     stage('Build image') {
+      tool { docker 'jenkins-docker'}
       steps{
         script {
           dockerImage = docker.build dockerimagename
