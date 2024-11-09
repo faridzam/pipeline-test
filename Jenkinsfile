@@ -17,6 +17,11 @@ pipeline {
       }
     }
 
+    stage('Initialize'){
+      def dockerHome = tool 'jenkins-docker'
+      env.PATH = "${dockerHome}/bin:${env.PATH}"
+    }
+
     stage('Build image') {
       steps{
         script {
@@ -46,13 +51,13 @@ pipeline {
       }
     }
 
-    // stage('Remove Unused docker image') {
-    //   steps{
-    //     sh "docker rmi $imagename:$BUILD_NUMBER"
-    //      sh "docker rmi $imagename:latest"
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $imagename:$BUILD_NUMBER"
+         sh "docker rmi $imagename:latest"
 
-    //   }
-    // }
+      }
+    }
 
   }
 
