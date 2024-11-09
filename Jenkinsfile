@@ -23,7 +23,7 @@ pipeline {
           def dockerHome = tool 'jenkins-docker'
           env.PATH = "${dockerHome}/bin:${env.PATH}"
         }
-        sh "sudo systemctl start docker"
+        sh "systemctl start docker"
       }
     }
 
