@@ -7,7 +7,7 @@ pipeline {
 
   agent any
 
-  tools {docker "jenkins-docker"}
+  tools {dockerTool "jenkins-docker"}
 
   stages {
 
