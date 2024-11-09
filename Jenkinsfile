@@ -4,8 +4,6 @@ pipeline {
     dockerimagename = "faridzam/pipeline-test"
     dockerImage = ""
   }
-
-  tools {dockerTool "jenkins-docker"}
   
   agent any
 
