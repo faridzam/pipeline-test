@@ -7,7 +7,7 @@ pipeline {
 
   tools {dockerTool "jenkins-docker"}
   
-  agent {dockerfile true}
+  agent any
 
   stages {
 
