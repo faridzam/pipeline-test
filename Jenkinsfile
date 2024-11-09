@@ -23,7 +23,7 @@ pipeline {
           def dockerHome = tool 'jenkins-docker'
           env.PATH = "${dockerHome}/bin:${env.PATH}"
         }
-        sh "usermod -a -G docker jenkins"
+        sh "systemctl restart docker"
       }
     }
 
