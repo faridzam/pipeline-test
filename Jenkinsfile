@@ -5,7 +5,9 @@ pipeline {
     dockerImage = ""
   }
 
-  agent any
+  agent {dockerfile true}
+
+  tools {dockerTool "jenkins-docker"}
 
   stages {
 
@@ -46,13 +48,13 @@ pipeline {
       }
     }
 
-    // stage('Remove Unused docker image') {
-    //   steps{
-    //     sh "docker rmi $imagename:$BUILD_NUMBER"
-    //      sh "docker rmi $imagename:latest"
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $imagename:$BUILD_NUMBER"
+         sh "docker rmi $imagename:latest"
 
-    //   }
-    // }
+      }
+    }
 
   }
 
