@@ -5,6 +5,8 @@ pipeline {
     dockerImage = ""
   }
 
+  agent {dockerfile true}
+
   tools {dockerTool "jenkins-docker"}
 
   stages {
