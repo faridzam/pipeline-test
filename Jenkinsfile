@@ -17,14 +17,14 @@ pipeline {
       }
     }
 
-    stage('Initialize Docker') {
-      steps{
-        script {
-          def dockerHome = tool 'jenkins-docker'
-          env.PATH = "${dockerHome}/bin:${env.PATH}"
-        }
-      }
-    }
+    // stage('Initialize Docker') {
+    //   steps{
+    //     script {
+    //       def dockerHome = tool 'jenkins-docker'
+    //       env.PATH = "${dockerHome}/bin:${env.PATH}"
+    //     }
+    //   }
+    // }
 
     // stage('Start Docker Daemon') {
     //   steps {
@@ -39,8 +39,6 @@ pipeline {
 
     stage('Build image') {
       steps{
-        sh 'dockerd &'  // Start Docker daemon in background
-        sh 'sleep 5'  // Give the daemon a moment to start
         script {
           dockerImage = docker.build dockerimagename
         }
