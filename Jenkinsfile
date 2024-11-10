@@ -21,13 +21,13 @@ pipeline {
       }
     }
 
-    // stage('Build image') {
-    //   steps{
-    //     script {
-    //       dockerImage = docker.build dockerimagename
-    //     }
-    //   }
-    // }
+    stage('Build image') {
+      steps{
+        script {
+          dockerImage = docker.build dockerimagename
+        }
+      }
+    }
 
     stage('Build and Pushing Image') {
       environment {
@@ -35,9 +35,7 @@ pipeline {
       }
       steps{
         script {
-          dockerImage = docker.build dockerimagename
           docker.withRegistry( 'https://hub.docker.com', registryCredential ) {
-            dockerImage = docker.build dockerimagename
             dockerImage.push()
           }
         }
@@ -52,13 +50,12 @@ pipeline {
       }
     }
 
-    // stage('Remove Unused docker image') {
-    //   steps{
-    //     sh "docker rmi $dockerimagename:$BUILD_NUMBER"
-    //     sh "docker rmi $dockerimagename:latest"
-    //     sh "docker rmi $dockerimagename"
-    //   }
-    // }
+    stage('Remove Unused docker image') {
+      steps{
+        dockerImage.remove()
+        dockerImage.prune()
+      }
+    }
 
   }
 
