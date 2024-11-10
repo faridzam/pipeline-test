@@ -43,8 +43,10 @@ pipeline {
     // }
     
     stage('Build image') {
-      sh 'whoami'
-      sh 'docker run --rm hello-world'
+      steps{
+        sh 'whoami'
+        sh 'docker run --rm hello-world'
+      }
     }
 
     // stage('Pushing Image') {
