@@ -35,9 +35,10 @@ pipeline {
       }
       steps{
         script {
-          def dockerImage = docker.build dockerimagename
+          dockerImage = docker.build dockerimagename
           docker.withRegistry( 'https://hub.docker.com', registryCredential ) {
-            dockerImage.push("latest")
+            dockerImage = docker.build dockerimagename
+            dockerImage.push()
           }
         }
       }
@@ -53,8 +54,9 @@ pipeline {
 
     stage('Remove Unused docker image') {
       steps{
-        sh "docker rmi $imagename:$BUILD_NUMBER"
-        sh "docker rmi $imagename:latest"
+        sh "docker rmi $dockerimagename:$BUILD_NUMBER"
+        sh "docker rmi $dockerimagename:latest"
+        sh "docker rmi $dockerimagename"
       }
     }
 
