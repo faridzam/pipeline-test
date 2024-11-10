@@ -29,15 +29,15 @@ pipeline {
       }
     }
 
-    stage('Build and Pushing Image') {
+    stage('Pushing Image') {
       environment {
         registryCredential = 'faridzam-dockerhub-login'
       }
       steps{
         script {
-          docker.withRegistry( 'https://hub.docker.com', registryCredential ) {
-            // dockerImage.push()
-          }
+          // docker.withRegistry( 'https://hub.docker.com', registryCredential ) {
+            dockerImage.push()
+          // }
         }
       }
     }
