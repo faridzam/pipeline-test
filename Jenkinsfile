@@ -17,22 +17,18 @@ pipeline {
       }
     }
 
-    // stage('Initialize Docker') {
-    //   steps{
-    //     script {
-    //       def dockerHome = tool 'jenkins-docker'
-    //       env.PATH = "${dockerHome}/bin:${env.PATH}"
-    //     }
-    //   }
-    // }
-
-    stage('Build image') {
-      agent {
-        docker {
-          image 'jenkins-docker'
-          args '-v /var/run/docker.sock:/var/run/docker.sock'
+    stage('Initialize Docker') {
+      steps{
+        script {
+          def dockerHome = tool 'jenkins-docker'
+          env.PATH = "${dockerHome}/bin:${env.PATH}"
+          sh 'dockerd &'  // Start Docker daemon in background
+          sh 'sleep 5'  // Give the daemon a moment to start
         }
       }
+    }
+
+    stage('Build image') {
       steps{
         script {
           dockerImage = docker.build dockerimagename
