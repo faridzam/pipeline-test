@@ -17,17 +17,22 @@ pipeline {
       }
     }
 
-    stage('Initialize Docker') {
-      steps{
-        script {
-          def dockerHome = tool 'jenkins-docker'
-          env.PATH = "${dockerHome}/bin:${env.PATH}"
-        }
-        sh "systemctl restart docker"
-      }
-    }
+    // stage('Initialize Docker') {
+    //   steps{
+    //     script {
+    //       def dockerHome = tool 'jenkins-docker'
+    //       env.PATH = "${dockerHome}/bin:${env.PATH}"
+    //     }
+    //   }
+    // }
 
     stage('Build image') {
+      agent {
+        docker {
+          image 'jenkins-docker'
+          args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+      }
       steps{
         script {
           dockerImage = docker.build dockerimagename
