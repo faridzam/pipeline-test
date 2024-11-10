@@ -26,31 +26,13 @@ pipeline {
       }
     }
 
-    stage('Start Docker Daemon') {
-      steps {
-        sh '''
-          nohup dockerd > /var/log/dockerd.log 2>&1 &
-          sleep 5  # Wait for Docker daemon to start
-          docker run --rm hello-world
-        '''
+    stage('Build image') {
+      steps{
+        script {
+          dockerImage = docker.build dockerimagename
+        }
       }
     }
-
-    // stage('Build image') {
-    //   agent {
-    //     docker {
-    //       image 'docker:latest'
-    //       args '--privileged'  // Necessary to run the Docker daemon
-    //     }
-    //   }
-    //   steps{
-    //     sh 'dockerd &'  // Start Docker daemon in background
-    //     sh 'sleep 5'  // Give the daemon a moment to start
-    //     script {
-    //       dockerImage = docker.build dockerimagename
-    //     }
-    //   }
-    // }
 
     // stage('Pushing Image') {
     //   environment {
