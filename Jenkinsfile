@@ -21,20 +21,21 @@ pipeline {
       }
     }
 
-    stage('Build image') {
-      steps{
-        script {
-          dockerImage = docker.build dockerimagename
-        }
-      }
-    }
+    // stage('Build image') {
+    //   steps{
+    //     script {
+    //       dockerImage = docker.build dockerimagename
+    //     }
+    //   }
+    // }
 
-    stage('Pushing Image') {
+    stage('Build and Pushing Image') {
       environment {
         registryCredential = 'faridzam-dockerhub-login'
       }
       steps{
         script {
+          dockerImage = docker.build dockerimagename
           docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
             dockerImage.push("latest")
           }
