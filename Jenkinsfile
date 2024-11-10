@@ -17,60 +17,63 @@ pipeline {
       }
     }
 
-    // stage('Initialize Docker') {
+    stage('Initialize Docker') {
+      steps{
+        script {
+          def dockerHome = tool 'jenkins-docker'
+          env.PATH = "${dockerHome}/bin:${env.PATH}"
+        }
+      }
+    }
+
+    // stage('Build image') {
+    //   agent {
+    //     docker {
+    //       image 'docker:latest'
+    //       args '--privileged'  // Necessary to run the Docker daemon
+    //     }
+    //   }
+    //   steps{
+    //     sh 'dockerd &'  // Start Docker daemon in background
+    //     sh 'sleep 5'  // Give the daemon a moment to start
+    //     script {
+    //       dockerImage = docker.build dockerimagename
+    //     }
+    //   }
+    // }
+    
+    stage('Build image') {
+      sh 'whoami'
+      sh 'docker run --rm hello-world'
+    }
+
+    // stage('Pushing Image') {
+    //   environment {
+    //     registryCredential = 'faridzam-dockerhub-login'
+    //   }
     //   steps{
     //     script {
-    //       def dockerHome = tool 'jenkins-docker'
-    //       env.PATH = "${dockerHome}/bin:${env.PATH}"
-    //       sh 'dockerd &'  // Start Docker daemon in background
-    //       sh 'sleep 5'  // Give the daemon a moment to start
+    //       docker.withRegistry( 'https://hub.docker.com', registryCredential ) {
+    //         dockerImage.push("latest")
+    //       }
     //     }
     //   }
     // }
 
-    stage('Build image') {
-      agent {
-        docker {
-          image 'docker:latest'
-          args '--privileged'  // Necessary to run the Docker daemon
-        }
-      }
-      steps{
-        sh 'dockerd &'  // Start Docker daemon in background
-        sh 'sleep 5'  // Give the daemon a moment to start
-        script {
-          dockerImage = docker.build dockerimagename
-        }
-      }
-    }
+    // stage('Deploying App to Kubernetes') {
+    //   steps {
+    //     script {
+    //       kubernetesDeploy(configs: "deployment-service.yml")
+    //     }
+    //   }
+    // }
 
-    stage('Pushing Image') {
-      environment {
-               registryCredential = 'faridzam-dockerhub-login'
-           }
-      steps{
-        script {
-          docker.withRegistry( 'https://hub.docker.com', registryCredential ) {
-            dockerImage.push("latest")
-          }
-        }
-      }
-    }
-
-    stage('Deploying App to Kubernetes') {
-      steps {
-        script {
-          kubernetesDeploy(configs: "deployment-service.yml")
-        }
-      }
-    }
-
-    stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi $imagename:$BUILD_NUMBER"
-        sh "docker rmi $imagename:latest"
-      }
-    }
+    // stage('Remove Unused docker image') {
+    //   steps{
+    //     sh "docker rmi $imagename:$BUILD_NUMBER"
+    //     sh "docker rmi $imagename:latest"
+    //   }
+    // }
 
   }
 
