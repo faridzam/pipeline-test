@@ -52,13 +52,13 @@ pipeline {
       }
     }
 
-    stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi $dockerimagename:$BUILD_NUMBER"
-        sh "docker rmi $dockerimagename:latest"
-        sh "docker rmi $dockerimagename"
-      }
-    }
+    // stage('Remove Unused docker image') {
+    //   steps{
+    //     sh "docker rmi $dockerimagename:$BUILD_NUMBER"
+    //     sh "docker rmi $dockerimagename:latest"
+    //     sh "docker rmi $dockerimagename"
+    //   }
+    // }
 
   }
 
