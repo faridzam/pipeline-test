@@ -53,7 +53,6 @@ pipeline {
     stage('Remove Unused docker image') {
       steps{
         dockerImage.remove()
-        dockerImage.prune()
       }
     }
 
