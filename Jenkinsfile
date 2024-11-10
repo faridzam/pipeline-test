@@ -52,7 +52,9 @@ pipeline {
 
     stage('Remove Unused docker image') {
       steps{
-        dockerImage.remove()
+        script{
+          dockerImage.remove()
+        }
       }
     }
 
