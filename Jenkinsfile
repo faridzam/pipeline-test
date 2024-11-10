@@ -26,6 +26,16 @@ pipeline {
       }
     }
 
+    stage('Start Docker Daemon') {
+      steps {
+        sh '''
+          nohup dockerd > /var/log/dockerd.log 2>&1 &
+          sleep 5  # Wait for Docker daemon to start
+          docker run --rm hello-world
+        '''
+      }
+    }
+
     // stage('Build image') {
     //   agent {
     //     docker {
@@ -41,13 +51,6 @@ pipeline {
     //     }
     //   }
     // }
-    
-    stage('Build image') {
-      steps{
-        sh 'whoami'
-        sh 'docker run --rm hello-world'
-      }
-    }
 
     // stage('Pushing Image') {
     //   environment {
