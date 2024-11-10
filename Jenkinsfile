@@ -26,16 +26,16 @@ pipeline {
     //   }
     // }
 
-    // stage('Start Docker Daemon') {
-    //   steps {
-    //     sh '''
-    //       sudo systemctl start docker  # Start Docker as a system service
-    //       sudo systemctl status docker  # Check status
-    //       sleep 5  # Wait for Docker daemon to start
-    //       docker run --rm hello-world
-    //     '''
-    //   }
-    // }
+    stage('Start Docker Daemon') {
+      steps {
+        sh '''
+          sudo systemctl start docker  # Start Docker as a system service
+          sudo systemctl status docker  # Check status
+          sleep 5  # Wait for Docker daemon to start
+          docker run --rm hello-world
+        '''
+      }
+    }
 
     stage('Build image') {
       steps{
