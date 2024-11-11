@@ -35,7 +35,6 @@ pipeline {
       }
       steps{
         sh 'which docker'
-        sh 'usermod -aG docker jenkins'
         sh '/usr/bin/docker --version'
         script {
           docker.withRegistry( 'https://index.docker.io/v1/', registryCredential ) {
