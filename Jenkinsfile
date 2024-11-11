@@ -52,7 +52,7 @@ pipeline {
     stage('Deploying App to Kubernetes') {
       steps {
         script {
-          kubernetesDeploy(configs: "deployment-service.yml", kubeConfig: kubeConfig)
+          // kubernetesDeploy(configs: "deployment-service.yml", kubeConfig: kubeConfig)
           // withKubeConfig([
           //   credentialsId: 'kubernetes-config',
           //   serverUrl: 'https://192.168.18.101:6443',
@@ -60,6 +60,9 @@ pipeline {
           // ]) {
           //   sh("kubectl get ns dev || kubectl create ns dev")
           // }
+          withKubeConfig([credentialsId: 'kubernetes-config', serverUrl: 'https://192.168.18.101:8443', namespace: 'dev']) {
+            sh("kubectl get ns dev || kubectl create ns dev")
+          }
         }
       }
     }
