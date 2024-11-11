@@ -7,6 +7,7 @@ pipeline {
   }
 
   environment {
+    kubeConfig = '/.kube/config'
     dockerPath = "${tool 'jenkins-docker'}/bin/docker"
     dockerImageName = "faridzam/pipeline-test"
     dockerImage = ""
@@ -39,11 +40,11 @@ pipeline {
           // Docker login using credentials from Jenkins
           withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
             sh """
-            echo \$DOCKER_PASSWORD | ${dockerPath} login -u \$DOCKER_USERNAME --password=\$DOCKER_PASSWORD
+            ${dockerPath} login -u \$DOCKER_USERNAME --password=\$DOCKER_PASSWORD
             """
           }
           // Push the Docker image
-          sh "$dockerPath push $dockerimagename:latest"
+          sh "$dockerPath push $dockerImageName:latest"
         }
       }
     }
@@ -51,7 +52,7 @@ pipeline {
     stage('Deploying App to Kubernetes') {
       steps {
         script {
-          kubernetesDeploy(configs: "deployment-service.yml")
+          kubernetesDeploy(configs: "deployment-service.yml", kubeConfig: kubeConfig)
         }
       }
     }
@@ -59,7 +60,7 @@ pipeline {
     stage('Remove Unused docker image') {
       steps{
         script{
-          dockerImage.remove()
+          sh "$dockerPath rmi $($dockerpath images | grep $dockerImageName)"
         }
       }
     }
