@@ -1,15 +1,16 @@
 pipeline {
-
-  environment {
-    dockerimagename = "faridzam/pipeline-test"
-    dockerImage = ""
-  }
   
   agent any
 
   tools{
-        dockerTool 'jenkins-docker'
-      }
+    dockerTool 'jenkins-docker'
+  }
+
+  environment {
+    dockerPath = "${tool 'jenkins-docker'}/bin/docker"
+    dockerImageName = "faridzam/pipeline-test"
+    dockerImage = ""
+  }
 
   stages {
 
@@ -24,7 +25,8 @@ pipeline {
     stage('Build image') {
       steps{
         script {
-          dockerImage = docker.build dockerimagename
+          // dockerImage = docker.build dockerimagename
+          sh "${dockerPath} build -t ${dockerImageName}"
         }
       }
     }
@@ -34,12 +36,17 @@ pipeline {
         registryCredential = 'faridzam-dockerhub-login'
       }
       steps{
-        sh 'which docker'
-        sh '/usr/bin/docker --version'
         script {
-          docker.withRegistry( 'https://index.docker.io/v1/', registryCredential ) {
-            dockerImage.push("latest")
-          }
+          // docker.withRegistry( 'https://index.docker.io/v1/', registryCredential ) {
+          //   dockerImage.push("latest")
+          // }
+
+          // Login to Docker registry
+          sh """
+          echo \$DOCKER_PASSWORD | ${dockerPath} login -u \$DOCKER_USERNAME --password-stdin
+          """
+          // Push the Docker image
+          sh "$dockerPath push $dockerimagename:latest"
         }
       }
     }
