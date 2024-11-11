@@ -55,7 +55,7 @@ pipeline {
 
     stage('Setup Kubernetes Context') {
       agent {
-        docker {
+        DOCKER_PATH {
           image 'bitnami/kubectl:latest' // Image with kubectl pre-installed
           args '--network host'
         }
@@ -71,7 +71,7 @@ pipeline {
 
     stage('Deploying App to Kubernetes') {
       agent {
-        docker {
+        DOCKER_PATH {
           image 'bitnami/kubectl:latest' // Image with kubectl pre-installed
           args '--network host'
         }
