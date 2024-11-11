@@ -26,7 +26,7 @@ pipeline {
       steps{
         script {
           // dockerImage = docker.build dockerimagename
-          sh "${dockerPath} build -t ${dockerImageName}"
+          sh "${dockerPath} build -t ${dockerImageName} ."
         }
       }
     }
