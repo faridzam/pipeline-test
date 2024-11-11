@@ -25,7 +25,6 @@ pipeline {
     stage('Build image') {
       steps{
         script {
-          // dockerImage = docker.build dockerimagename
           sh "${dockerPath} build -t ${dockerImageName} ."
         }
       }
@@ -37,14 +36,10 @@ pipeline {
       }
       steps{
         script {
-          // docker.withRegistry( 'https://index.docker.io/v1/', registryCredential ) {
-          //   dockerImage.push("latest")
-          // }
-
           // Docker login using credentials from Jenkins
           withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
             sh """
-            echo \$DOCKER_PASSWORD | ${dockerPath} login -u \$DOCKER_USERNAME --password-stdin
+            echo \$DOCKER_PASSWORD | ${dockerPath} login -u \$DOCKER_USERNAME --password=\$DOCKER_PASSWORD
             """
           }
           // Push the Docker image
