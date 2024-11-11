@@ -54,12 +54,7 @@ pipeline {
     // }
 
     stage('Setup Kubernetes Context') {
-      agent {
-        DOCKER_PATH {
-          image 'bitnami/kubectl:latest' // Image with kubectl pre-installed
-          args '--network host'
-        }
-      }
+      agent kubernetes
       steps {
         script {
           withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
@@ -70,12 +65,7 @@ pipeline {
     }
 
     stage('Deploying App to Kubernetes') {
-      agent {
-        DOCKER_PATH {
-          image 'bitnami/kubectl:latest' // Image with kubectl pre-installed
-          args '--network host'
-        }
-      }
+      agent kubernetes
       steps {
         script {
           withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
