@@ -53,7 +53,16 @@ pipeline {
       steps {
         script {
           // kubernetesDeploy(configs: "deployment-service.yml", kubeConfig: kubeConfig)
-          sh "kubectl config view "
+          withKubeConfig([
+            credentialsId: 'jenkins-kubernetes-user-text',
+            caCertificate: '',
+            serverUrl: 'https://192.168.18.101:6443',
+            contextName: '',
+            clusterName: '',
+            namespace: 'dev'
+          ]) {
+            sh("kubectl get ns dev || kubectl create ns dev")
+          }
         }
       }
     }
