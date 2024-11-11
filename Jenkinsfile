@@ -56,7 +56,8 @@ pipeline {
     stage('Setup Kubernetes Context') {
       agent {
         kubernetes {
-          label 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+          cloud 'kube-cp'
+          inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
           defaultContainer 'jnlp' // The main Jenkins container
           yaml """
           apiVersion: v1
@@ -85,7 +86,8 @@ pipeline {
     stage('Deploying App to Kubernetes') {
       agent {
         kubernetes {
-          label 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+          cloud 'kube-cp'
+          inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
           defaultContainer 'jnlp' // The main Jenkins container
           yaml """
           apiVersion: v1
