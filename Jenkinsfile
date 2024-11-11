@@ -54,7 +54,7 @@ pipeline {
     // }
 
     stage('Setup Kubernetes Context') {
-      agent {label 'kubernetes'}
+      agent {label 'kube-cp'}
       steps {
         script {
           withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
@@ -65,7 +65,7 @@ pipeline {
     }
 
     stage('Deploying App to Kubernetes') {
-      agent {label 'kubernetes'}
+      agent {label 'kube-cp'}
       steps {
         script {
           withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
