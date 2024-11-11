@@ -54,11 +54,8 @@ pipeline {
         script {
           // kubernetesDeploy(configs: "deployment-service.yml", kubeConfig: kubeConfig)
           withKubeConfig([
-            credentialsId: 'jenkins-kubernetes-user-text',
-            caCertificate: '',
+            credentialsId: 'kubernetes-config',
             serverUrl: 'https://192.168.18.101:6443',
-            contextName: '',
-            clusterName: '',
             namespace: 'dev'
           ]) {
             sh("which kubectl")
