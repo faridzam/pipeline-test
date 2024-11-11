@@ -7,9 +7,14 @@ pipeline {
   }
 
   environment {
-    dockerPath = "${tool 'jenkins-docker'}/bin/docker"
-    dockerImageName = "faridzam/pipeline-test"
-    dockerImage = ""
+    DOCKER_PATH = "${tool 'jenkins-docker'}/bin/docker"
+    DOCKER_IMAGE_NAME = "faridzam/pipeline-test"
+    KUBERNETES_CREDENTIALS_ID = 'kubernetes-config'
+    KUBERNETES_SERVER_URL = 'https://192.168.18.101:8443'
+    NAMESPACE = 'dev'
+    REPO_URL = 'https://github.com/faridzam/pipeline-test.git'
+    BRANCH = 'dev'
+    DEPLOYMENT_YAML = 'deployment-service.yml'
   }
 
   stages {
@@ -25,7 +30,7 @@ pipeline {
     // stage('Build image') {
     //   steps{
     //     script {
-    //       sh "${dockerPath} build -t ${dockerImageName} ."
+    //       sh "${DOCKER_PATH} build -t ${DOCKER_IMAGE_NAME} ."
     //     }
     //   }
     // }
@@ -39,29 +44,30 @@ pipeline {
     //       // Docker login using credentials from Jenkins
     //       withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
     //         sh """
-    //         ${dockerPath} login -u \$DOCKER_USERNAME --password=\$DOCKER_PASSWORD
+    //         ${DOCKER_PATH} login -u \$DOCKER_USERNAME --password=\$DOCKER_PASSWORD
     //         """
     //       }
     //       // Push the Docker image
-    //       sh "$dockerPath push $dockerImageName"
+    //       sh "$DOCKER_PATH push $DOCKER_IMAGE_NAME"
     //     }
     //   }
     // }
 
+    stage('Setup Kubernetes Context') {
+      steps {
+        script {
+          withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+            sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
+          }
+        }
+      }
+    }
+
     stage('Deploying App to Kubernetes') {
       steps {
         script {
-          // kubernetesDeploy(configs: "deployment-service.yml", kubeConfig: kubeConfig)
-          // withKubeConfig([
-          //   credentialsId: 'kubernetes-config',
-          //   serverUrl: 'https://192.168.18.101:6443',
-          //   namespace: 'dev'
-          // ]) {
-          //   sh("kubectl get ns dev || kubectl create ns dev")
-          // }
-          withKubeConfig([credentialsId: 'kubernetes-config', serverUrl: 'https://192.168.18.101:8443', namespace: 'dev']) {
-            sh("which kubectl")
-            sh("kubectl get ns dev || kubectl create ns dev")
+          withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+            sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
           }
         }
       }
@@ -70,7 +76,7 @@ pipeline {
     // stage('Remove Unused docker image') {
     //   steps{
     //     script{
-    //       sh "$dockerPath rmi $($dockerPath images | grep $dockerImageName)"
+    //       sh "$DOCKER_PATH rmi $($DOCKER_PATH images | grep $DOCKER_IMAGE_NAME)"
     //     }
     //   }
     // }
