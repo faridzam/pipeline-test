@@ -61,6 +61,7 @@ pipeline {
             clusterName: '',
             namespace: 'dev'
           ]) {
+            sh("which kubectl")
             sh("kubectl get ns dev || kubectl create ns dev")
           }
         }
