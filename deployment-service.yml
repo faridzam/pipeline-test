@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pipeline-test-deployment
+  namespace: dev
   labels:
     app: pipeline-test
 spec:
@@ -26,6 +27,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: pipeline-test-service
+  namespace: dev
 spec:
   selector:
     app: pipeline-test 

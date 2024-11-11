@@ -19,13 +19,13 @@ pipeline {
 
   stages {
 
-    // stage('Checkout Source') {
-    //   steps {
-    //     withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
-    //         git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
-    //     }
-    //   }
-    // }
+    stage('Checkout Source') {
+      steps {
+        withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
+            git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
+        }
+      }
+    }
 
     // stage('Build image') {
     //   steps{
