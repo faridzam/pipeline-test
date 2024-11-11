@@ -44,7 +44,7 @@ pipeline {
             """
           }
           // Push the Docker image
-          sh "$dockerPath push $dockerImageName:latest"
+          sh "$dockerPath push $dockerImageName"
         }
       }
     }
