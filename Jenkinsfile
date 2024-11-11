@@ -57,13 +57,13 @@ pipeline {
       }
     }
 
-    stage('Remove Unused docker image') {
-      steps{
-        script{
-          sh "${dockerPath} rmi $(${dockerpath} images | grep ${dockerImageName})"
-        }
-      }
-    }
+    // stage('Remove Unused docker image') {
+    //   steps{
+    //     script{
+    //       sh "$dockerPath rmi $($dockerPath images | grep $dockerImageName)"
+    //     }
+    //   }
+    // }
 
   }
 
