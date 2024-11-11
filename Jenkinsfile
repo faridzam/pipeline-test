@@ -54,7 +54,25 @@ pipeline {
     // }
 
     stage('Setup Kubernetes Context') {
-      agent {label 'kube-cp'}
+      agent {
+        kubernetes {
+          label 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+          defaultContainer 'jnlp' // The main Jenkins container
+          yaml """
+          apiVersion: v1
+          kind: Pod
+          spec:
+            containers:
+              - name: jnlp
+                image: jenkins/inbound-agent:latest
+              - name: kubectl
+                image: bitnami/kubectl:latest
+                command:
+                  - cat
+                tty: true
+          """
+        }
+      }
       steps {
         script {
           withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
@@ -65,7 +83,25 @@ pipeline {
     }
 
     stage('Deploying App to Kubernetes') {
-      agent {label 'kube-cp'}
+      agent {
+        kubernetes {
+          label 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+          defaultContainer 'jnlp' // The main Jenkins container
+          yaml """
+          apiVersion: v1
+          kind: Pod
+          spec:
+            containers:
+              - name: jnlp
+                image: jenkins/inbound-agent:latest
+              - name: kubectl
+                image: bitnami/kubectl:latest
+                command:
+                  - cat
+                tty: true
+          """
+        }
+      }
       steps {
         script {
           withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
