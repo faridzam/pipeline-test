@@ -58,7 +58,6 @@ pipeline {
             serverUrl: 'https://192.168.18.101:6443',
             namespace: 'dev'
           ]) {
-            sh("which kubectl")
             sh("kubectl get ns dev || kubectl create ns dev")
           }
         }
