@@ -41,10 +41,12 @@ pipeline {
           //   dockerImage.push("latest")
           // }
 
-          // Login to Docker registry
-          sh """
-          echo \$DOCKER_PASSWORD | ${dockerPath} login -u \$DOCKER_USERNAME --password-stdin
-          """
+          // Docker login using credentials from Jenkins
+          withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            sh """
+            echo \$DOCKER_PASSWORD | ${dockerPath} login -u \$DOCKER_USERNAME --password-stdin
+            """
+          }
           // Push the Docker image
           sh "$dockerPath push $dockerimagename:latest"
         }
