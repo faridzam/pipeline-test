@@ -7,7 +7,6 @@ pipeline {
   }
 
   environment {
-    kubeConfig = '/.kube/config'
     dockerPath = "${tool 'jenkins-docker'}/bin/docker"
     dockerImageName = "faridzam/pipeline-test"
     dockerImage = ""
@@ -61,6 +60,7 @@ pipeline {
           //   sh("kubectl get ns dev || kubectl create ns dev")
           // }
           withKubeConfig([credentialsId: 'kubernetes-config', serverUrl: 'https://192.168.18.101:8443', namespace: 'dev']) {
+            sh("which kubectl")
             sh("kubectl get ns dev || kubectl create ns dev")
           }
         }
