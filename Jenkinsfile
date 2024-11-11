@@ -7,10 +7,6 @@ pipeline {
   
   agent any
 
-  tools{
-    dockerTool 'jenkins-docker'
-  }
-
   stages {
 
     stage('Checkout Source') {
@@ -22,6 +18,9 @@ pipeline {
     }
 
     stage('Build image') {
+      tools{
+        dockerTool 'jenkins-docker'
+      }
       steps{
         script {
           dockerImage = docker.build dockerimagename
@@ -33,11 +32,14 @@ pipeline {
       environment {
         registryCredential = 'faridzam-dockerhub-login'
       }
+      tools{
+        dockerTool 'jenkins-docker'
+      }
       steps{
         script {
-          // docker.withRegistry( 'https://hub.docker.com', registryCredential ) {
-            dockerImage.push()
-          // }
+          docker.withRegistry( 'https://index.docker.io/v1/', registryCredential ) {
+            dockerImage.push("latest")
+          }
         }
       }
     }
