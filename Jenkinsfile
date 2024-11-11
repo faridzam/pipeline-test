@@ -60,7 +60,7 @@ pipeline {
     stage('Remove Unused docker image') {
       steps{
         script{
-          sh "$dockerPath rmi $($dockerpath images | grep $dockerImageName)"
+          sh "${dockerPath} rmi $(${dockerpath} images | grep ${dockerImageName})"
         }
       }
     }
