@@ -4,7 +4,7 @@ pipeline {
     DOCKER_IMAGE_NAME = "faridzam/pipeline-test-dev"
     REGISTRY_CREDENTIALS_ID = "faridzam-docker-credentials"
     KUBERNETES_CREDENTIALS_ID = 'faridzam-kubernetes-credentials'
-    NAMESPACE = 'devops-tools'
+    NAMESPACE = 'dev'
     REPO_URL = 'https://github.com/faridzam/pipeline-test.git'
     BRANCH = 'dev'
     DEPLOYMENT_YAML = 'deployment-service.yml'
@@ -51,7 +51,7 @@ pipeline {
       steps {
         script {
           withKubeConfig([credentialsId: KUBERNETES_CREDENTIALS_ID, serverUrl: 'https://192.168.18.101:6443']) {
-            sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+            sh "kubectl apply -f ${env.DEPLOYMENT_YAML}"
           }
         }
       }
