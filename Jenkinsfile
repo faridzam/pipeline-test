@@ -83,7 +83,6 @@ pipeline {
             remote.password = '\$SSH_PASSWORD'
             remote.allowAnyHosts = true
             stage('Remote SSH') {
-              sshCommand remote: remote, command: "which kubectl"
               sshCommand remote: remote, command: "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
             }
           }
