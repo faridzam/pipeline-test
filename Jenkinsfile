@@ -3,6 +3,7 @@ pipeline {
   environment {
     DOCKER_IMAGE_NAME = "faridzam/pipeline-test-dev"
     REGISTRY_CREDENTIALS_ID = "faridzam-docker-credentials"
+    KUBERNETES_CREDENTIALS_ID = 'faridzam-kubernetes-credentials'
     NAMESPACE = 'devops-tools'
     REPO_URL = 'https://github.com/faridzam/pipeline-test.git'
     BRANCH = 'dev'
@@ -39,7 +40,9 @@ pipeline {
     stage('Setup Kubernetes Namespace') {
       steps {
         script {
-          sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
+          withKubeConfig([credentialsId: KUBERNETES_CREDENTIALS_ID, serverUrl: 'https://192.168.18.101:6443']) {
+            sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
+          }
         }
       }
     }
@@ -47,7 +50,9 @@ pipeline {
     stage('Deploying App to Kubernetes') {
       steps {
         script {
-          sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+          withKubeConfig([credentialsId: KUBERNETES_CREDENTIALS_ID, serverUrl: 'https://192.168.18.101:6443']) {
+            sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+          }
         }
       }
     }
