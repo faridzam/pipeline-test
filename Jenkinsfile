@@ -38,12 +38,6 @@ pipeline {
 
   stages {
 
-    stage("check jnlp") {
-      steps {
-        sh "which jnlp"
-      }
-    }
-
     // stage('Checkout Source') {
     //   steps {
     //     withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
@@ -94,6 +88,18 @@ pipeline {
     //     }
     //   }
     // }
+
+    stages {
+      stage('Deploying App to Kubernetes') {
+        steps {
+          script {
+            withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+              kubectlApply file: env.DEPLOYMENT_YAML
+            }
+          }
+        }
+      }
+    }
 
     // stage('Remove Unused docker image') {
     //   steps{
