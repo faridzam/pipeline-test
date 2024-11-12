@@ -15,20 +15,22 @@ pipeline {
     DEPLOYMENT_YAML = 'deployment-service.yml'
   }
 
-  agent {
-    kubernetes {
-      cloud 'kube-cp'
-      inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
-    }
-  }
+  agent any
+
+  // agent {
+  //   kubernetes {
+  //     cloud 'kube-cp'
+  //     inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+  //   }
+  // }
 
   stages {
 
     stage('Checkout Source') {
       steps {
         sh "which git"
+        sh "which docker"
         sh "which kubectl"
-        // sh "which docker"
         // withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
         //     git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
         // }
