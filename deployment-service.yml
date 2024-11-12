@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pipeline-test-server
-        image: faridzam/pipeline-test:latest
+        image: docker.io/faridzam/pipeline-test-dev:latest
         ports:
         - containerPort: 3000
         
