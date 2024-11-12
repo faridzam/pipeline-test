@@ -61,12 +61,9 @@ pipeline {
     stage('Setup Kubernetes Context') {
       steps {
         script {
-          container('kubectl'){
+          withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
             sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
           }
-          // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-          //   sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
-          // }
         }
       }
     }
