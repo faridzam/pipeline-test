@@ -60,12 +60,19 @@ pipeline {
 
     stage('Setup Kubernetes Context') {
       steps {
-        container('kubectl'){
-          script {
-            withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-              sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
-            }
-          }
+        script {
+          // Write the kubeconfig to a temporary file
+          def kubeconfigFile = "${env.WORKSPACE}/kubeconfig"
+          writeFile file: kubeconfigFile, text: kubernetes-config
+
+          // Apply the YAML configuration to the Kubernetes cluster
+          sh """
+              export KUBECONFIG=${kubeconfigFile}
+              kubectl apply -f ${env.DEPLOYMENT_YAML}
+          """
+          // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+          //   sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
+          // }
         }
       }
     }
