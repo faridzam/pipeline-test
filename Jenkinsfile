@@ -1,5 +1,5 @@
 pipeline {
-
+  
   tools{
     dockerTool 'jenkins-docker'
   }
@@ -15,12 +15,26 @@ pipeline {
     DEPLOYMENT_YAML = 'deployment-service.yml'
   }
 
-  // agent none
-
   agent {
     kubernetes {
       cloud 'kube-cp'
-      inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+      inheritFrom 'kube-slave-pod-1'
+      label 'kube-slave-pod-1'
+      defaultContainer 'jnlp'
+      yaml """
+      apiVersion: v1
+      kind: Pod
+      spec:
+        containers:
+          - name: jnlp
+            image: jenkins/inbound-agent:latest
+            args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+          - name: kubectl
+            image: bitnami/kubectl:latest
+            command:
+              - cat
+            tty: true
+      """
     }
   }
 
@@ -28,12 +42,9 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        sh "which git"
-        sh "which docker"
-        sh "which kubectl"
-        // withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
-        //     git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
-        // }
+        withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
+            git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
+        }
       }
     }
 
@@ -63,15 +74,18 @@ pipeline {
     //   }
     // }
 
-    // stage('Setup Kubernetes Context') {
-    //   steps {
-    //     script {
-    //       withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-    //         sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
-    //       }
-    //     }
-    //   }
-    // }
+    stage('Setup Kubernetes Context') {
+      steps {
+        script {
+          container('kubectl'){
+            sh "which kubectl"
+          }
+          // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+          //   sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
+          // }
+        }
+      }
+    }
 
     // stage('Deploying App to Kubernetes') {
     //   steps {
