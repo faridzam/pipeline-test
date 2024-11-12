@@ -16,27 +16,25 @@ pipeline {
     DEPLOYMENT_YAML = 'deployment-service.yml'
   }
 
-  agent {
-    kubernetes {
-      inheritFrom 'kube-slave-pod-1'
-      yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: kubectl
-            image: bitnami/kubectl:latest
-            command:
-            - cat
-            tty: true
-          - name: jnlp
-            image: jenkins/inbound-agent
-            args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-      '''
-    }
-  }
+  // agent {
+  //   kubernetes {
+  //     inheritFrom 'kube-slave-pod-1'
+  //     yaml '''
+  //       spec:
+  //         containers:
+  //         - name: kubectl
+  //           image: bitnami/kubectl:latest
+  //           command:
+  //           - cat
+  //           tty: true
+  //         - name: jnlp
+  //           image: jenkins/inbound-agent
+  //           args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+  //     '''
+  //   }
+  // }
 
-  // agent any
+  agent any
 
   stages {
 
@@ -81,17 +79,15 @@ pipeline {
     //   }
     // }
 
-    stage('Deploying App to Kubernetes') {
-      steps {
-        container('kubectl') {
-          script {
-            // Ensure the kubectl container is configured correctly with the kubeconfig
-            sh "kubectl apply -f ${DEPLOYMENT_YAML}"
-          }
-        }
-        // sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
-      }
-    }
+    // stage('Deploying App to Kubernetes') {
+    //   steps {
+    //     script {
+    //       withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+    //         sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+    //       }
+    //     }
+    //   }
+    // }
 
     // stage('Remove Unused docker image') {
     //   steps{
@@ -101,6 +97,19 @@ pipeline {
     //   }
     // }
 
+  }
+
+  node {
+    stage('List pods') {
+      withKubeConfig([credentialsId: KUBERNETES_CREDENTIALS_ID,
+                      serverUrl: KUBERNETES_SERVER_URL,
+                      contextName: 'kubernetes',
+                      clusterName: 'kubernetes',
+                      namespace: 'devops-tools'
+                      ]) {
+        sh 'kubectl get pods'
+      }
+    }
   }
 
 }
