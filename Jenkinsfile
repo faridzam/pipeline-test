@@ -10,8 +10,8 @@ pipeline {
     DOCKER_PATH = "${tool 'jenkins-docker'}/bin/docker"
     DOCKER_IMAGE_NAME = "faridzam/pipeline-test"
     KUBERNETES_CREDENTIALS_ID = 'kubernetes-config'
-    KUBERNETES_SERVER_URL = 'https://192.168.18.101:8443'
-    NAMESPACE = 'dev'
+    KUBERNETES_SERVER_URL = 'https://192.168.18.101:6443'
+    NAMESPACE = 'devops-tools'
     REPO_URL = 'https://github.com/faridzam/pipeline-test.git'
     BRANCH = 'dev'
     DEPLOYMENT_YAML = 'deployment-service.yml'
