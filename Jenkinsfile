@@ -57,7 +57,7 @@ pipeline {
       agent {
         kubernetes {
           cloud 'kube-cp'
-          inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+          // inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
           defaultContainer 'jnlp' // The main Jenkins container
           yaml """
           apiVersion: v1
@@ -87,7 +87,7 @@ pipeline {
       agent {
         kubernetes {
           cloud 'kube-cp'
-          inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+          // inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
           defaultContainer 'jnlp' // The main Jenkins container
           yaml """
           apiVersion: v1
