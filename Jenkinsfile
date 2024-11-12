@@ -16,25 +16,25 @@ pipeline {
     DEPLOYMENT_YAML = 'deployment-service.yml'
   }
 
-  agent {
-    kubernetes {
-      inheritFrom 'kube-slave-pod-1'
-      yaml '''
-        spec:
-          containers:
-          - name: kubectl
-            image: bitnami/kubectl:latest
-            command:
-            - cat
-            tty: true
-          - name: jnlp
-            image: jenkins/inbound-agent
-            args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-      '''
-    }
-  }
+  // agent {
+  //   kubernetes {
+  //     inheritFrom 'kube-slave-pod-1'
+  //     yaml '''
+  //       spec:
+  //         containers:
+  //         - name: kubectl
+  //           image: bitnami/kubectl:latest
+  //           command:
+  //           - cat
+  //           tty: true
+  //         - name: jnlp
+  //           image: jenkins/inbound-agent
+  //           args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+  //     '''
+  //   }
+  // }
 
-  // agent any
+  agent any
 
   stages {
 
