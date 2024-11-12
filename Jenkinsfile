@@ -15,14 +15,14 @@ pipeline {
     DEPLOYMENT_YAML = 'deployment-service.yml'
   }
 
-  // agent any
+  agent any
 
-  agent {
-    kubernetes {
-      cloud 'kube-cp'
-      inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
-    }
-  }
+  // agent {
+  //   kubernetes {
+  //     cloud 'kube-cp'
+  //     inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+  //   }
+  // }
 
   stages {
 
