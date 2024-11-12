@@ -63,7 +63,7 @@ pipeline {
         script {
           // Write the kubeconfig to a temporary file
           def kubeconfigFile = "${env.WORKSPACE}/kubeconfig"
-          writeFile file: kubeconfigFile, text: kubernetes-config
+          writeFile file: kubeconfigFile, text: credentials(KUBERNETES_CREDENTIALS_ID)
 
           // Apply the YAML configuration to the Kubernetes cluster
           sh """
