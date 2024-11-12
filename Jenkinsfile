@@ -18,7 +18,6 @@ pipeline {
   agent {
     kubernetes {
       cloud 'kube-cp'
-      inheritFrom 'kube-slave-pod-1'
       defaultContainer 'jnlp'
       yaml """
       apiVersion: v1
