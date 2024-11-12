@@ -68,17 +68,25 @@ pipeline {
     //   }
     // }
 
-    stage('Deploying App to Kubernetes') {
-      steps {
-        script {
-          // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-          //   sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
-          // }
-          kubernetesDeploy(
-              configs: DEPLOYMENT_YAML,  // Path to your Kubernetes YAML file
-              kubeconfigId: KUBERNETES_CREDENTIALS_ID, // Jenkins credential ID for kubeconfig
-              enableConfigSubstitution: true // Optional: allows variable substitution in YAML files
-          )
+    // stage('Deploying App to Kubernetes') {
+    //   steps {
+    //     script {
+    //       // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+    //       //   sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+    //       // }
+    //       kubernetesDeploy(
+    //           configs: DEPLOYMENT_YAML,  // Path to your Kubernetes YAML file
+    //           kubeconfigId: KUBERNETES_CREDENTIALS_ID, // Jenkins credential ID for kubeconfig
+    //           enableConfigSubstitution: true // Optional: allows variable substitution in YAML files
+    //       )
+    //     }
+    //   }
+    // }
+
+    node {
+      stage('Apply Kubernetes files') {
+        withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+          sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
         }
       }
     }
