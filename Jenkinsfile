@@ -18,12 +18,15 @@ pipeline {
   agent {
     kubernetes {
       cloud 'kube-cp'
+      label 'kube-slave-pod-1'
       defaultContainer 'jnlp'
       yaml """
       apiVersion: v1
       kind: Pod
       spec:
         containers:
+        - name: jnlp
+          image: jenkins/inbound-agent:latest
         - name: kubectl
           image: bitnami/kubectl:latest
           command:
@@ -71,19 +74,21 @@ pipeline {
 
     stage('Setup Kubernetes Context') {
       steps {
-        script {
-          // Write the kubeconfig to a temporary file
-          def kubeconfigFile = "${env.WORKSPACE}/kubeconfig"
-          writeFile file: kubeconfigFile, text: KUBERNETES_CREDENTIALS_ID
+        container('kubectl'){
+          script {
+            // Write the kubeconfig to a temporary file
+            def kubeconfigFile = "${env.WORKSPACE}/kubeconfig"
+            writeFile file: kubeconfigFile, text: KUBERNETES_CREDENTIALS_ID
 
-          // Apply the YAML configuration to the Kubernetes cluster
-          sh """
-              export KUBECONFIG=${kubeconfigFile}
-              kubectl apply -f ${env.DEPLOYMENT_YAML}
-          """
-          // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-          //   sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
-          // }
+            // Apply the YAML configuration to the Kubernetes cluster
+            sh """
+                export KUBECONFIG=${kubeconfigFile}
+                kubectl apply -f ${env.DEPLOYMENT_YAML}
+            """
+            // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+            //   sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
+            // }
+          }
         }
       }
     }
