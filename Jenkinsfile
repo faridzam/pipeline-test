@@ -20,6 +20,8 @@ pipeline {
     kubernetes {
       inheritFrom 'kube-slave-pod-1'
       yaml '''
+        apiVersion: v1
+        kind: Pod
         spec:
           containers:
           - name: kubectl
@@ -38,13 +40,13 @@ pipeline {
 
   stages {
 
-    stage('Checkout Source') {
-      steps {
-        withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
-            git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
-        }
-      }
-    }
+    // stage('Checkout Source') {
+    //   steps {
+    //     withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
+    //         git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
+    //     }
+    //   }
+    // }
 
     // stage('Build image') {
     //   steps{
@@ -81,14 +83,13 @@ pipeline {
 
     stage('Deploying App to Kubernetes') {
       steps {
-        script {
-          withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-            sh "hostname"
-            sh "whoami"
-            sh "which kubectl"
-            // sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+        container('kubectl') {
+          script {
+            // Ensure the kubectl container is configured correctly with the kubeconfig
+            sh "kubectl apply -f ${DEPLOYMENT_YAML}"
           }
         }
+        // sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
       }
     }
 
