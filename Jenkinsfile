@@ -18,8 +18,19 @@ pipeline {
 
   agent {
     kubernetes {
-      cloud 'kube-cp'
       inheritFrom 'kube-slave-pod-1'
+      yaml '''
+        spec:
+          containers:
+          - name: kubectl
+            image: bitnami/kubectl:latest
+            command:
+            - cat
+            tty: true
+          - name: jnlp
+            image: jenkins/inbound-agent
+            args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+      '''
     }
   }
 
@@ -75,7 +86,7 @@ pipeline {
             sh "hostname"
             sh "whoami"
             sh "which kubectl"
-            sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+            // sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
           }
         }
       }
