@@ -19,6 +19,18 @@ pipeline {
     kubernetes {
       cloud 'kube-cp'
       inheritFrom 'kube-slave-pod-1'
+      defaultContainer 'jnlp'
+      yaml """
+      apiVersion: v1
+      kind: Pod
+      spec:
+        containers:
+        - name: kubectl
+          image: bitnami/kubectl:latest
+          command:
+          - cat
+          tty: true
+      """
     }
   }
 
