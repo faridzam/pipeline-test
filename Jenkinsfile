@@ -46,28 +46,28 @@ pipeline {
     //   }
     // }
 
-    // stage('Build image') {
-    //   steps{
-    //     script {
-    //       sh "${DOCKER_PATH} build -t ${DOCKER_IMAGE_NAME} ."
-    //     }
-    //   }
-    // }
+    stage('Build image') {
+      steps{
+        script {
+          sh "${DOCKER_PATH} build -t ${DOCKER_IMAGE_NAME} ."
+        }
+      }
+    }
 
-    // stage('Pushing Image') {
-    //   steps{
-    //     script {
-    //       // Docker login using credentials from Jenkins
-    //       withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-    //         sh """
-    //         ${DOCKER_PATH} login -u \$DOCKER_USERNAME --password=\$DOCKER_PASSWORD
-    //         """
-    //       }
-    //       // Push the Docker image
-    //       sh "$DOCKER_PATH push $DOCKER_IMAGE_NAME"
-    //     }
-    //   }
-    // }
+    stage('Pushing Image') {
+      steps{
+        script {
+          // Docker login using credentials from Jenkins
+          withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            sh """
+            ${DOCKER_PATH} login -u \$DOCKER_USERNAME --password=\$DOCKER_PASSWORD
+            """
+          }
+          // Push the Docker image
+          sh "$DOCKER_PATH push $DOCKER_IMAGE_NAME"
+        }
+      }
+    }
 
     // stage('Setup Kubernetes Context') {
     //   steps {
