@@ -1,8 +1,8 @@
 pipeline {
   
-  tools{
-    dockerTool 'jenkins-docker'
-  }
+  // tools{
+  //   dockerTool 'jenkins-docker'
+  // }
 
   environment {
     DOCKER_PATH = "${tool 'jenkins-docker'}/bin/docker"
