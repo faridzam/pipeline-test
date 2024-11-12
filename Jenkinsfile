@@ -38,7 +38,7 @@ pipeline {
 
   stages {
 
-    stage {
+    stage("check jnlp") {
       steps {
         sh "which jnlp"
       }
