@@ -7,8 +7,10 @@ pipeline {
   environment {
     DOCKER_PATH = "${tool 'jenkins-docker'}/bin/docker"
     DOCKER_IMAGE_NAME = "faridzam/pipeline-test"
+    REGISTRY_CREDENTIALS_ID = "faridzam-dockerhub-login"
     KUBERNETES_CREDENTIALS_ID = 'kubernetes-config'
     KUBERNETES_SERVER_URL = 'https://192.168.18.101:6443'
+    KUBERNETES_SSH_CREDENTIALS_ID = 'ssh-kube-cp-faridzam'
     NAMESPACE = 'devops-tools'
     REPO_URL = 'https://github.com/faridzam/pipeline-test.git'
     BRANCH = 'dev'
@@ -43,13 +45,10 @@ pipeline {
     // }
 
     // stage('Pushing Image') {
-    //   environment {
-    //     registryCredential = 'faridzam-dockerhub-login'
-    //   }
     //   steps{
     //     script {
     //       // Docker login using credentials from Jenkins
-    //       withCredentials([usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+    //       withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
     //         sh """
     //         ${DOCKER_PATH} login -u \$DOCKER_USERNAME --password=\$DOCKER_PASSWORD
     //         """
@@ -76,9 +75,17 @@ pipeline {
           // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
           //   sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
           // }
-          withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: 'kubernetes', credentialsId: 'kubernetes-config', namespace: 'default', restrictKubeConfigAccess: false, serverUrl: 'https://192.168.18.101:6443') {
-            sh "which kubectl"
-            sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+          withCredentials([usernamePassword(credentialsId: KUBERNETES_SSH_CREDENTIALS_ID, usernameVariable: 'SSH_USERNAME', passwordVariable: 'SSH_PASSWORD')]) {
+            def remote = [:]
+            remote.name = 'kube-cp'
+            remote.host = '192.168.18.101'
+            remote.user = '\$SSH_USERNAME'
+            remote.password = '\$SSH_PASSWORD'
+            remote.allowAnyHosts = true
+            stage('Remote SSH') {
+              sshCommand remote: remote, command: "which kubectl"
+              sshCommand remote: remote, command: "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+            }
           }
         }
       }
