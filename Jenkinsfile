@@ -5,7 +5,7 @@ pipeline {
   // }
 
   environment {
-    DOCKER_PATH = "${tool 'jenkins-docker'}/bin/docker"
+    // DOCKER_PATH = "${tool 'jenkins-docker'}/bin/docker"
     DOCKER_IMAGE_NAME = "faridzam/pipeline-test"
     REGISTRY_CREDENTIALS_ID = "faridzam-dockerhub-login"
     KUBERNETES_CREDENTIALS_ID = 'kubernetes-config'
