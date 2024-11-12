@@ -74,8 +74,8 @@ pipeline {
           // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
           //   sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
           // }
-          sshagent(['ssh-kube-cp']) {
-            sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+          kubernetesApply{
+            file: DEPLOYMENT_YAML
           }
         }
       }
