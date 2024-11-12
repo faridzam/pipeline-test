@@ -92,9 +92,7 @@ pipeline {
     stage('Deploying App to Kubernetes') {
       steps {
         script {
-          withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL]) {
-            sh "which kubectl"
-          }
+          sh "which kubectl"
         }
       }
     }
