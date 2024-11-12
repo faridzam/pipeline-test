@@ -28,9 +28,9 @@ pipeline {
       steps {
         sh "which git"
         sh "which docker"
-        withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
-            git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
-        }
+        // withCredentials([string(credentialsId: 'faridzam-github-token', variable: 'GITHUB_TOKEN')]) {
+        //     git url: 'https://github.com/faridzam/pipeline-test.git', credentialsId: 'faridzam-github-token'
+        // }
       }
     }
 
@@ -60,37 +60,25 @@ pipeline {
     //   }
     // }
 
-    stage('Setup Kubernetes Context') {
-      agent {
-        kubernetes {
-          cloud 'kube-cp'
-          inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
-        }
-      }
-      steps {
-        script {
-          withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-            sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
-          }
-        }
-      }
-    }
+    // stage('Setup Kubernetes Context') {
+    //   steps {
+    //     script {
+    //       withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+    //         sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
+    //       }
+    //     }
+    //   }
+    // }
 
-    stage('Deploying App to Kubernetes') {
-      agent {
-        kubernetes {
-          cloud 'kube-cp'
-          inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
-        }
-      }
-      steps {
-        script {
-          withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-            sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
-          }
-        }
-      }
-    }
+    // stage('Deploying App to Kubernetes') {
+    //   steps {
+    //     script {
+    //       withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
+    //         sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
+    //       }
+    //     }
+    //   }
+    // }
 
     // stage('Remove Unused docker image') {
     //   steps{
