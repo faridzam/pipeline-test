@@ -58,6 +58,20 @@ pipeline {
         kubernetes {
           cloud 'kube-cp'
           inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+          defaultContainer 'jnlp' // The main Jenkins container
+          yaml """
+          apiVersion: v1
+          kind: Pod
+          spec:
+            containers:
+              - name: jnlp
+                image: jenkins/inbound-agent:latest
+              - name: kubectl
+                image: bitnami/kubectl:latest
+                command:
+                  - cat
+                tty: true
+          """
         }
       }
       steps {
@@ -74,6 +88,20 @@ pipeline {
         kubernetes {
           cloud 'kube-cp'
           inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
+          defaultContainer 'jnlp' // The main Jenkins container
+          yaml """
+          apiVersion: v1
+          kind: Pod
+          spec:
+            containers:
+              - name: jnlp
+                image: jenkins/inbound-agent:latest
+              - name: kubectl
+                image: bitnami/kubectl:latest
+                command:
+                  - cat
+                tty: true
+          """
         }
       }
       steps {
