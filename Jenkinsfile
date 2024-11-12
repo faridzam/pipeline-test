@@ -15,12 +15,14 @@ pipeline {
     DEPLOYMENT_YAML = 'deployment-service.yml'
   }
 
-  agent {
-    kubernetes {
-      cloud 'kube-cp'
-      inheritFrom 'kube-slave-pod-1'
-    }
-  }
+  // agent {
+  //   kubernetes {
+  //     cloud 'kube-cp'
+  //     inheritFrom 'kube-slave-pod-1'
+  //   }
+  // }
+
+  agent any
 
   stages {
 
@@ -74,8 +76,9 @@ pipeline {
           // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
           //   sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
           // }
-          kubernetesApply{
-            file: DEPLOYMENT_YAML
+          withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: 'kubernetes', credentialsId: 'kubernetes-config', namespace: 'default', restrictKubeConfigAccess: false, serverUrl: 'https://192.168.18.101:6443') {
+            sh "which kubectl"
+            sh "kubectl apply -f ${env.DEPLOYMENT_YAML} -n ${env.NAMESPACE}"
           }
         }
       }
