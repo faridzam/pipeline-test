@@ -93,7 +93,7 @@ pipeline {
       steps {
         script {
           withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
-            kubectlApply file: env.DEPLOYMENT_YAML
+            kubernetesApply file: env.DEPLOYMENT_YAML
           }
         }
       }
