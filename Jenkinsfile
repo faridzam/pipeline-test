@@ -19,6 +19,7 @@ pipeline {
 
   agent {
     kubernetes {
+      cloud 'kube-cp'
       inheritFrom 'kube-slave-pod-1' // Matches the label defined in your Pod Template
     }
   }
