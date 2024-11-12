@@ -62,7 +62,7 @@ pipeline {
       steps {
         script {
           container('kubectl'){
-            sh "which kubectl"
+            sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
           }
           // withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS_ID, serverUrl: env.KUBERNETES_SERVER_URL, namespace: env.NAMESPACE]) {
           //   sh("kubectl get ns ${env.NAMESPACE} || kubectl create ns ${env.NAMESPACE}")
